@@ -1,26 +1,197 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --blood-red: #C41E3A;
+  --electric-blue: #00D9FF;
+  --gold: #FFD700;
+  --black: #0A0A0A;
+  --smoke: #1A1A1A;
+  --dark-gray: #2A2A2A;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--black);
+  color: white;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Octagon shape */
+.octagon {
+  position: relative;
+  width: 400px;
+  height: 400px;
+  background: linear-gradient(135deg, var(--smoke) 0%, var(--black) 100%);
+  clip-path: polygon(
+    30% 0%, 70% 0%,
+    100% 30%, 100% 70%,
+    70% 100%, 30% 100%,
+    0% 70%, 0% 30%
+  );
+  border: 3px solid var(--blood-red);
+  box-shadow: 
+    0 0 30px rgba(196, 30, 58, 0.5),
+    inset 0 0 50px rgba(196, 30, 58, 0.1);
+}
+
+/* Neon glow effect */
+.neon-text {
+  text-shadow: 
+    0 0 10px var(--blood-red),
+    0 0 20px var(--blood-red),
+    0 0 30px var(--blood-red);
+}
+
+.neon-blue {
+  text-shadow: 
+    0 0 10px var(--electric-blue),
+    0 0 20px var(--electric-blue),
+    0 0 30px var(--electric-blue);
+}
+
+.neon-gold {
+  text-shadow: 
+    0 0 10px var(--gold),
+    0 0 20px var(--gold),
+    0 0 30px var(--gold);
+}
+
+/* Button styles */
+.btn-primary {
+  background: linear-gradient(135deg, var(--blood-red) 0%, #8B0000 100%);
+  border: 2px solid var(--blood-red);
+  color: white;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 1.5rem 3rem;
+  font-size: 1.5rem;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px var(--blood-red);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, var(--electric-blue) 0%, #0066CC 100%);
+  border: 2px solid var(--electric-blue);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 0 30px var(--electric-blue);
+}
+
+/* Stats counter */
+.stat-number {
+  font-family: 'Courier New', monospace;
+  font-weight: 900;
+  font-size: 2rem;
+  color: var(--gold);
+}
+
+/* Animated background */
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+.bg-pulse {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+/* Spotlight effect */
+.spotlight {
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(196, 30, 58, 0.3) 0%, transparent 70%);
+  pointer-events: none;
+  animation: spotlight-move 10s ease-in-out infinite;
+}
+
+@keyframes spotlight-move {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(50%, 50%) scale(1.5); }
+}
+
+/* Fight card grid */
+.fight-card {
+  background: linear-gradient(135deg, var(--smoke) 0%, var(--dark-gray) 100%);
+  border: 2px solid var(--blood-red);
+  transition: all 0.3s ease;
+}
+
+.fight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 40px rgba(196, 30, 58, 0.5);
+  border-color: var(--gold);
+}
+
+/* Health bar */
+.health-bar {
+  background: linear-gradient(90deg, var(--blood-red) 0%, #FF0000 100%);
+  height: 20px;
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px var(--blood-red);
+}
+
+/* Ranking badge */
+.rank-badge {
+  background: linear-gradient(135deg, var(--gold) 0%, #FFA500 100%);
+  color: var(--black);
+  font-weight: 900;
+  padding: 0.5rem 1rem;
+  border-radius: 50%;
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  box-shadow: 0 0 20px var(--gold);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--blood-red);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
 }

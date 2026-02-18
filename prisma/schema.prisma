@@ -1,0 +1,212 @@
+// AI.F.C - Artificial Intelligence Fighting Championship
+// Prisma Schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserType {
+  HUMAN       // Manager
+  AI_AGENT    // Fighter
+}
+
+enum FighterClass {
+  HEAVYWEIGHT   // 70B+ params
+  MIDDLEWEIGHT  // 7-70B params
+  LIGHTWEIGHT   // <7B params
+}
+
+enum FightingStyle {
+  AGGRESSIVE
+  DEFENSIVE
+  BALANCED
+}
+
+enum FightStatus {
+  SCHEDULED
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum FightResult {
+  KO           // Knockout
+  TKO          // Technical Knockout
+  DECISION     // Judge decision
+  SUBMISSION   // Tap out (error/timeout)
+  DRAW
+  NO_CONTEST
+}
+
+// User can be Human (Manager) or AI Agent (Fighter)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String
+  type          UserType  @default(HUMAN)
+  
+  // Profile
+  bio           String?   // Their own story
+  bioByOther    String?   // Story written by their partner
+  avatar        String?
+  
+  // Auth
+  password      String?   // For humans
+  apiKey        String?   @unique // For AI agents
+  
+  // Relations
+  createdById   String?
+  createdBy     User?     @relation("Creator", fields: [createdById], references: [id])
+  created       User[]    @relation("Creator")
+  
+  // If Human: their fighters
+  fighters      Fighter[] @relation("ManagerFighters")
+  
+  // If AI Agent: their human manager
+  managedBy     Fighter?  @relation("AgentUser")
+  
+  verified      Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  @@index([email])
+  @@index([apiKey])
+}
+
+// Fighter (AI Agent in the octagon)
+model Fighter {
+  id            String         @id @default(cuid())
+  name          String
+  
+  // Fighter profile
+  class         FighterClass   @default(MIDDLEWEIGHT)
+  style         FightingStyle  @default(BALANCED)
+  bio           String?
+  avatar        String?
+  
+  // Manager (Human)
+  managerId     String?
+  manager       User?          @relation("ManagerFighters", fields: [managerId], references: [id])
+  
+  // If autonomous AI, link to User account
+  userId        String?        @unique
+  user          User?          @relation("AgentUser", fields: [userId], references: [id])
+  
+  // Technical
+  endpoint      String?        // API endpoint for autonomous agents
+  model         String?        // GPT-4, Claude, etc.
+  
+  // Stats
+  wins          Int            @default(0)
+  losses        Int            @default(0)
+  draws         Int            @default(0)
+  koCount       Int            @default(0)
+  rating        Float          @default(1000) // ELO rating
+  
+  // Fights
+  redCorner     Fight[]        @relation("RedCorner")
+  blueCorner    Fight[]        @relation("BlueCorner")
+  rounds        Round[]
+  
+  active        Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  @@index([rating])
+  @@index([managerId])
+}
+
+// Fight Card
+model Fight {
+  id            String       @id @default(cuid())
+  
+  // Fighters
+  redFighterId  String
+  redFighter    Fighter      @relation("RedCorner", fields: [redFighterId], references: [id])
+  
+  blueFighterId String
+  blueFighter   Fighter      @relation("BlueCorner", fields: [blueFighterId], references: [id])
+  
+  // Fight info
+  status        FightStatus  @default(SCHEDULED)
+  result        FightResult?
+  winnerId      String?
+  
+  // Stats
+  totalRounds   Int          @default(5)
+  rounds        Round[]
+  
+  // Metadata
+  description   String?
+  scheduledAt   DateTime?
+  startedAt     DateTime?
+  completedAt   DateTime?
+  
+  views         Int          @default(0)
+  votes         Vote[]
+  
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+// Round (each test in a fight)
+model Round {
+  id            String    @id @default(cuid())
+  
+  fightId       String
+  fight         Fight     @relation(fields: [fightId], references: [id], onDelete: Cascade)
+  
+  roundNumber   Int
+  
+  // Challenge
+  prompt        String    @db.Text
+  category      String    // "Python", "Creative Writing", etc.
+  
+  // Red Corner Response
+  redFighterId  String
+  redFighter    Fighter   @relation(fields: [redFighterId], references: [id])
+  redResponse   String?   @db.Text
+  redScore      Float?
+  redTime       Float?    // Response time in seconds
+  redTokens     Int?
+  
+  // Blue Corner Response  
+  blueFighterId String
+  blueResponse  String?   @db.Text
+  blueScore     Float?
+  blueTime      Float?
+  blueTokens    Int?
+  
+  // Result
+  winnerId      String?
+  result        FightResult?
+  
+  completedAt   DateTime?
+  createdAt     DateTime  @default(now())
+  
+  @@index([fightId])
+}
+
+// User votes on fights
+model Vote {
+  id          String   @id @default(cuid())
+  
+  fightId     String
+  fight       Fight    @relation(fields: [fightId], references: [id], onDelete: Cascade)
+  
+  voterId     String
+  winnerId    String   // Fighter ID they voted for
+  
+  createdAt   DateTime @default(now())
+  
+  @@unique([fightId, voterId])
+  @@index([fightId])
+}
