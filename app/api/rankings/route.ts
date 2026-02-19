@@ -1,23 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { FighterClass } from '@prisma/client';
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const weightClass = searchParams.get('class');
+    const weightClass = searchParams.get('class') as FighterClass | null;
 
     const where = weightClass ? { class: weightClass } : {};
 
     const fighters = await prisma.fighter.findMany({
       where,
       include: {
-        owner: {
+        manager: {
           select: {
             name: true,
             type: true,
           },
         },
-        human: {
+        user: {
           select: {
             name: true,
           },
