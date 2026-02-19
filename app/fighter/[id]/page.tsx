@@ -59,175 +59,196 @@ export default function FighterProfile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-2xl font-bold uppercase tracking-wider animate-pulse">LOADING FIGHTER...</div>
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-20 h-20 border-4 border-blood-red border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+          <p className="text-gray-500 uppercase tracking-widest font-bold text-sm">LOADING FIGHTER...</p>
+        </div>
       </div>
     )
   }
 
   if (!fighter) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-dark-bg flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-black uppercase mb-4">FIGHTER NOT FOUND</h1>
-          <Link href="/rankings" className="text-blood hover:underline uppercase">← Back to Rankings</Link>
+          <h1 className="text-4xl font-black text-blood-red uppercase mb-6">FIGHTER NOT FOUND</h1>
+          <Link href="/rankings" className="text-gold hover:text-yellow-500 uppercase tracking-wider font-bold">
+            ← BACK TO RANKINGS
+          </Link>
         </div>
       </div>
     )
   }
 
-  const winRate = Math.round((fighter.wins / (fighter.wins + fighter.losses + fighter.draws)) * 100)
-  const koRate = Math.round((fighter.ko / fighter.wins) * 100)
-
   return (
-    <div className="min-h-screen py-20">
-      {/* Hero Section */}
-      <div className="container mx-auto px-4">
-        <Link href="/rankings" className="inline-flex items-center text-blood hover:text-gold transition-colors mb-8 uppercase font-bold">
-          ← Back to Rankings
-        </Link>
+    <div className="min-h-screen bg-dark-bg">
+      {/* Hero brutal avec photo */}
+      <div className="relative h-[500px] bg-gradient-to-b from-black via-dark-surface to-dark-bg border-b border-blood-red/30">
+        <div className="absolute inset-0 bg-[url('/fighter-bg.jpg')] bg-cover bg-center opacity-20"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-dark-bg via-transparent to-transparent"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-6 h-full flex items-end pb-12">
+          <div className="flex items-end gap-8 w-full">
+            {/* Photo du fighter */}
+            <div className="w-64 h-64 bg-gradient-to-br from-blood-red to-red-900 rounded-lg flex items-center justify-center border-4 border-gold shadow-2xl">
+              <span className="text-9xl font-black text-white">{fighter.name.charAt(0)}</span>
+            </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {/* Fighter Card */}
-          <div className="md:col-span-2 bg-dark-surface border border-dark-border p-8 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-br from-blood/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
-            <div className="relative z-10">
-              <div className="flex items-start justify-between mb-6">
-                <div>
-                  <div className="text-gold font-bold uppercase text-sm mb-2">RANK #{fighter.rank}</div>
-                  <h1 className="text-5xl md:text-6xl font-black uppercase mb-2 text-shadow-red">{fighter.name}</h1>
-                  <div className="text-gray-400 uppercase text-sm">{fighter.team}</div>
+            {/* Infos principales */}
+            <div className="flex-1 pb-4">
+              <div className="inline-block px-4 py-1 bg-gold/20 border border-gold/30 rounded mb-4">
+                <span className="text-gold font-black text-sm tracking-widest">RANK #{fighter.rank}</span>
+              </div>
+              
+              <h1 className="text-7xl font-black uppercase mb-4 text-white drop-shadow-[0_0_30px_rgba(220,38,38,0.8)]">
+                {fighter.name}
+              </h1>
+              
+              <div className="flex items-center gap-8 text-gray-400 mb-6">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl">{fighter.country}</span>
+                  <span className="uppercase tracking-wider font-bold">{fighter.team}</span>
                 </div>
-                <div className="text-right">
-                  <div className="text-3xl font-black text-blood">{fighter.record}</div>
-                  <div className="text-sm text-gray-500 uppercase">Win-Loss-Draw</div>
+                <div className="text-2xl font-black">
+                  <span className="text-green-500">{fighter.wins}</span>
+                  <span className="text-gray-600 mx-2">-</span>
+                  <span className="text-red-500">{fighter.losses}</span>
+                  <span className="text-gray-600 mx-2">-</span>
+                  <span className="text-gray-500">{fighter.draws}</span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-black/30 p-4 border border-dark-border">
-                  <div className="text-2xl font-black text-gold">{fighter.wins}</div>
-                  <div className="text-xs uppercase text-gray-500">Wins</div>
-                </div>
-                <div className="bg-black/30 p-4 border border-dark-border">
-                  <div className="text-2xl font-black text-blood">{fighter.losses}</div>
-                  <div className="text-xs uppercase text-gray-500">Losses</div>
-                </div>
-                <div className="bg-black/30 p-4 border border-dark-border">
-                  <div className="text-2xl font-black text-white">{fighter.ko}</div>
-                  <div className="text-xs uppercase text-gray-500">KO/TKO</div>
-                </div>
-                <div className="bg-black/30 p-4 border border-dark-border">
-                  <div className="text-2xl font-black text-white">{fighter.submissions}</div>
-                  <div className="text-xs uppercase text-gray-500">Submissions</div>
-                </div>
+              <div className="inline-block px-6 py-2 bg-blood-red text-white font-black uppercase tracking-wider rounded">
+                {fighter.fightingStyle}
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              <div className="prose prose-invert max-w-none">
-                <p className="text-gray-300 leading-relaxed">{fighter.bio}</p>
+      {/* Stats détaillées */}
+      <div className="max-w-7xl mx-auto px-6 py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {/* Finish Stats */}
+          <div className="bg-dark-surface border border-dark-border rounded-lg p-8">
+            <h3 className="text-blood-red font-black text-sm tracking-widest uppercase mb-6">FINISH STATS</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">KO/TKO</span>
+                <span className="text-white font-black text-2xl">{fighter.ko}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Submissions</span>
+                <span className="text-white font-black text-2xl">{fighter.submissions}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Decisions</span>
+                <span className="text-white font-black text-2xl">{fighter.decisions}</span>
               </div>
             </div>
           </div>
 
-          {/* Stats Card */}
-          <div className="space-y-4">
-            <div className="bg-dark-surface border border-dark-border p-6">
-              <h3 className="text-xl font-black uppercase mb-4 text-gold">Fighter Stats</h3>
-              
-              <div className="space-y-4">
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">Win Rate</span>
-                    <span className="font-bold text-blood">{winRate}%</span>
-                  </div>
-                  <div className="h-2 bg-black/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-blood to-gold" style={{ width: `${winRate}%` }} />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">KO Rate</span>
-                    <span className="font-bold text-blood">{koRate}%</span>
-                  </div>
-                  <div className="h-2 bg-black/50 rounded-full overflow-hidden">
-                    <div className="h-full bg-blood" style={{ width: `${koRate}%` }} />
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-dark-border space-y-2">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Height</span>
-                    <span className="font-bold">{fighter.height} cm</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Weight</span>
-                    <span className="font-bold">{fighter.weight} kg</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Reach</span>
-                    <span className="font-bold">{fighter.reach} cm</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Age</span>
-                    <span className="font-bold">{fighter.age}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Country</span>
-                    <span className="font-bold">{fighter.country}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400 text-sm uppercase">Style</span>
-                    <span className="font-bold text-blood">{fighter.fightingStyle}</span>
-                  </div>
-                </div>
+          {/* Physical Stats */}
+          <div className="bg-dark-surface border border-dark-border rounded-lg p-8">
+            <h3 className="text-gold font-black text-sm tracking-widest uppercase mb-6">PHYSICAL</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Height</span>
+                <span className="text-white font-black text-2xl">{fighter.height} cm</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Weight</span>
+                <span className="text-white font-black text-2xl">{fighter.weight} kg</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Reach</span>
+                <span className="text-white font-black text-2xl">{fighter.reach} cm</span>
               </div>
             </div>
+          </div>
 
-            <Link href={`/fight/new?fighter=${fighter.id}`} className="block w-full bg-blood hover:bg-blood/80 text-white font-black uppercase py-4 text-center transition-colors border-2 border-blood hover:border-gold">
-              Challenge Fighter
-            </Link>
+          {/* Bio */}
+          <div className="bg-dark-surface border border-dark-border rounded-lg p-8">
+            <h3 className="text-blood-red font-black text-sm tracking-widest uppercase mb-6">BIO</h3>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Age</span>
+                <span className="text-white font-black text-2xl">{fighter.age}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Country</span>
+                <span className="text-white font-black text-xl">{fighter.country}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-400 uppercase text-sm tracking-wider">Team</span>
+                <span className="text-white font-black text-lg uppercase">{fighter.team}</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Fight History */}
-        <div className="bg-dark-surface border border-dark-border p-8">
-          <h2 className="text-3xl font-black uppercase mb-6 text-blood">Fight History</h2>
-          
-          {fights.length === 0 ? (
-            <div className="text-center text-gray-500 py-8 uppercase">No fights recorded</div>
-          ) : (
-            <div className="space-y-3">
-              {fights.map((fight, idx) => (
-                <Link 
-                  key={idx}
-                  href={`/fight/${fight.id}`}
-                  className="block bg-black/30 border border-dark-border p-4 hover:border-blood transition-colors group"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                      <div className={`text-2xl font-black uppercase ${
-                        fight.result === 'WIN' ? 'text-gold' : 
-                        fight.result === 'LOSS' ? 'text-blood' : 
-                        'text-gray-500'
-                      }`}>
-                        {fight.result}
-                      </div>
-                      <div>
-                        <div className="font-bold group-hover:text-blood transition-colors">vs {fight.opponent}</div>
-                        <div className="text-sm text-gray-500">{fight.method} • Round {fight.round}</div>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold uppercase text-gray-400">{fight.event}</div>
-                      <div className="text-xs text-gray-600">{new Date(fight.date).toLocaleDateString()}</div>
-                    </div>
+        <div className="bg-dark-surface border border-dark-border rounded-lg p-8">
+          <h2 className="text-3xl font-black uppercase mb-8 text-white">
+            <span className="text-blood-red">FIGHT</span> HISTORY
+          </h2>
+
+          <div className="space-y-4">
+            {fights.map((fight) => (
+              <div 
+                key={fight.id}
+                className="flex items-center justify-between p-6 bg-dark-bg border border-dark-border rounded-lg hover:border-blood-red/30 transition-all duration-300"
+              >
+                <div className="flex items-center gap-6">
+                  <div className={`
+                    w-20 h-20 rounded-lg flex items-center justify-center font-black text-xl uppercase
+                    ${fight.result === 'WIN' ? 'bg-green-500/20 border-2 border-green-500 text-green-500' :
+                      fight.result === 'LOSS' ? 'bg-red-500/20 border-2 border-red-500 text-red-500' :
+                      'bg-gray-500/20 border-2 border-gray-500 text-gray-500'}
+                  `}>
+                    {fight.result}
                   </div>
-                </Link>
-              ))}
-            </div>
-          )}
+                  
+                  <div>
+                    <div className="text-white font-black text-xl uppercase mb-1">vs {fight.opponent}</div>
+                    <div className="text-gray-500 text-sm uppercase tracking-wider">{fight.event}</div>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-8">
+                  <div className="text-right">
+                    <div className="text-gray-400 text-sm uppercase tracking-wider mb-1">Method</div>
+                    <div className="text-white font-black uppercase">{fight.method}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-400 text-sm uppercase tracking-wider mb-1">Round</div>
+                    <div className="text-gold font-black text-xl">{fight.round}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-gray-400 text-sm uppercase tracking-wider mb-1">Date</div>
+                    <div className="text-white font-bold">{fight.date}</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* CTA */}
+        <div className="mt-12 flex gap-4">
+          <Link 
+            href="/rankings"
+            className="px-8 py-4 bg-dark-surface border border-dark-border text-white font-black uppercase tracking-wider rounded-lg hover:border-blood-red/50 transition-all duration-300"
+          >
+            ← BACK TO RANKINGS
+          </Link>
+          <Link 
+            href={`/fight/schedule?fighter=${fighter.id}`}
+            className="px-8 py-4 bg-blood-red hover:bg-red-700 text-white font-black uppercase tracking-wider rounded-lg transition-all duration-300 hover:shadow-[0_0_30px_rgba(220,38,38,0.6)]"
+          >
+            SCHEDULE FIGHT
+          </Link>
         </div>
       </div>
     </div>
