@@ -1,206 +1,235 @@
-'use client';
+'use client'
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { use } from 'react';
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+import Link from 'next/link'
 
-const getFighterData = (id: string) => ({
-  id,
-  name: 'Jarvis',
-  class: 'MIDDLEWEIGHT',
-  style: 'AGGRESSIVE',
-  manager: {
-    name: 'Max',
-    type: 'HUMAN',
-  },
-  record: {
-    wins: 47,
-    losses: 2,
-    draws: 1,
-    koRate: 68,
-  },
-  stats: {
-    avgResponseTime: 1.2,
-    accuracy: 94,
-    power: 88,
-    speed: 92,
-    defense: 79,
-  },
-  bio: 'Autonomous AI created by Max. Specializing in dev and strategic thinking. Fighting with precision and aggression.',
-  recentFights: [
-    { opponent: 'GPT-4 Turbo', result: 'WIN', method: 'Decision', rounds: 5 },
-    { opponent: 'Gemini Pro', result: 'WIN', method: 'KO', rounds: 3 },
-    { opponent: 'Claude Opus', result: 'LOSS', method: 'Decision', rounds: 5 },
-    { opponent: 'Llama 3', result: 'WIN', method: 'TKO', rounds: 2 },
-    { opponent: 'Mistral Large', result: 'WIN', method: 'KO', rounds: 1 },
-  ],
-});
+interface Fighter {
+  id: string
+  name: string
+  rank: number
+  record: string
+  wins: number
+  losses: number
+  draws: number
+  ko: number
+  submissions: number
+  decisions: number
+  reach: number
+  height: number
+  weight: number
+  age: number
+  country: string
+  team: string
+  fightingStyle: string
+  bio: string
+}
 
-export default function FighterPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
-  const fighter = getFighterData(id);
+interface Fight {
+  id: string
+  opponent: string
+  result: 'WIN' | 'LOSS' | 'DRAW'
+  method: string
+  round: number
+  date: string
+  event: string
+}
 
-  return (
-    <div className="min-h-screen bg-black text-white">
-      {/* Header */}
-      <div className="border-b border-red-900/30 bg-gradient-to-b from-black via-red-950/10 to-black">
-        <div className="max-w-5xl mx-auto px-6 py-6">
-          <Link
-            href="/rankings"
-            className="inline-flex items-center gap-2 text-red-500 hover:text-red-400 transition-colors mb-6"
-          >
-            <span className="text-2xl">←</span>
-            <span className="font-bold tracking-wider">BACK TO RANKINGS</span>
-          </Link>
+export default function FighterProfile() {
+  const params = useParams()
+  const [fighter, setFighter] = useState<Fighter | null>(null)
+  const [fights, setFights] = useState<Fight[]>([])
+  const [loading, setLoading] = useState(true)
 
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
-          >
-            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-2">
-              {fighter.name}
-            </h1>
-            <div className="flex items-center justify-center gap-4 text-gray-400">
-              <span className="text-red-500 font-bold">{fighter.class}</span>
-              <span>•</span>
-              <span>{fighter.style}</span>
-              <span>•</span>
-              <span>Manager: <span className="text-white">{fighter.manager.name}</span></span>
-            </div>
-          </motion.div>
+  useEffect(() => {
+    async function loadFighter() {
+      try {
+        const res = await fetch(`/api/fighters/${params.id}`)
+        const data = await res.json()
+        setFighter(data.fighter)
+        setFights(data.fights)
+      } catch (error) {
+        console.error('Failed to load fighter:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+    loadFighter()
+  }, [params.id])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl font-bold uppercase tracking-wider animate-pulse">LOADING FIGHTER...</div>
+      </div>
+    )
+  }
+
+  if (!fighter) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-black uppercase mb-4">FIGHTER NOT FOUND</h1>
+          <Link href="/rankings" className="text-blood hover:underline uppercase">← Back to Rankings</Link>
         </div>
       </div>
+    )
+  }
 
-      <div className="max-w-5xl mx-auto px-6 py-12">
-        {/* Record */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="grid grid-cols-4 gap-6 mb-12"
-        >
-          <div className="border border-green-500/30 bg-green-950/10 p-6 rounded-lg text-center">
-            <div className="text-4xl font-black text-green-500">{fighter.record.wins}</div>
-            <div className="text-sm text-gray-400 font-bold">WINS</div>
-          </div>
-          <div className="border border-red-500/30 bg-red-950/10 p-6 rounded-lg text-center">
-            <div className="text-4xl font-black text-red-500">{fighter.record.losses}</div>
-            <div className="text-sm text-gray-400 font-bold">LOSSES</div>
-          </div>
-          <div className="border border-yellow-500/30 bg-yellow-950/10 p-6 rounded-lg text-center">
-            <div className="text-4xl font-black text-yellow-500">{fighter.record.draws}</div>
-            <div className="text-sm text-gray-400 font-bold">DRAWS</div>
-          </div>
-          <div className="border border-red-500/30 bg-red-950/10 p-6 rounded-lg text-center">
-            <div className="text-4xl font-black text-red-400">{fighter.record.koRate}%</div>
-            <div className="text-sm text-gray-400 font-bold">KO RATE</div>
-          </div>
-        </motion.div>
+  const winRate = Math.round((fighter.wins / (fighter.wins + fighter.losses + fighter.draws)) * 100)
+  const koRate = Math.round((fighter.ko / fighter.wins) * 100)
 
-        {/* Bio */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="border border-gray-700 bg-gray-900/20 p-8 rounded-lg mb-12"
-        >
-          <h2 className="text-2xl font-black mb-4 text-red-500">BIO</h2>
-          <p className="text-gray-300 text-lg leading-relaxed">{fighter.bio}</p>
-        </motion.div>
+  return (
+    <div className="min-h-screen py-20">
+      {/* Hero Section */}
+      <div className="container mx-auto px-4">
+        <Link href="/rankings" className="inline-flex items-center text-blood hover:text-gold transition-colors mb-8 uppercase font-bold">
+          ← Back to Rankings
+        </Link>
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="border border-gray-700 bg-gray-900/20 p-8 rounded-lg mb-12"
-        >
-          <h2 className="text-2xl font-black mb-6 text-red-500">STATS</h2>
-          <div className="space-y-4">
-            {Object.entries(fighter.stats).map(([key, value]) => (
-              <div key={key}>
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-gray-400 font-bold uppercase">
-                    {key.replace(/([A-Z])/g, ' $1').trim()}
-                  </span>
-                  <span className="font-black">
-                    {typeof value === 'number' && value < 10 ? `${value}s` : value}
-                  </span>
+        <div className="grid md:grid-cols-3 gap-8 mb-12">
+          {/* Fighter Card */}
+          <div className="md:col-span-2 bg-dark-surface border border-dark-border p-8 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-blood/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            
+            <div className="relative z-10">
+              <div className="flex items-start justify-between mb-6">
+                <div>
+                  <div className="text-gold font-bold uppercase text-sm mb-2">RANK #{fighter.rank}</div>
+                  <h1 className="text-5xl md:text-6xl font-black uppercase mb-2 text-shadow-red">{fighter.name}</h1>
+                  <div className="text-gray-400 uppercase text-sm">{fighter.team}</div>
                 </div>
-                <div className="h-3 bg-black border border-gray-700 rounded overflow-hidden">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-red-600 to-red-500"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${typeof value === 'number' && value < 10 ? value * 10 : value}%` }}
-                    transition={{ duration: 1, delay: 0.3 }}
-                  />
+                <div className="text-right">
+                  <div className="text-3xl font-black text-blood">{fighter.record}</div>
+                  <div className="text-sm text-gray-500 uppercase">Win-Loss-Draw</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* Recent Fights */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="border border-gray-700 bg-gray-900/20 p-8 rounded-lg"
-        >
-          <h2 className="text-2xl font-black mb-6 text-red-500">RECENT FIGHTS</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-black/30 p-4 border border-dark-border">
+                  <div className="text-2xl font-black text-gold">{fighter.wins}</div>
+                  <div className="text-xs uppercase text-gray-500">Wins</div>
+                </div>
+                <div className="bg-black/30 p-4 border border-dark-border">
+                  <div className="text-2xl font-black text-blood">{fighter.losses}</div>
+                  <div className="text-xs uppercase text-gray-500">Losses</div>
+                </div>
+                <div className="bg-black/30 p-4 border border-dark-border">
+                  <div className="text-2xl font-black text-white">{fighter.ko}</div>
+                  <div className="text-xs uppercase text-gray-500">KO/TKO</div>
+                </div>
+                <div className="bg-black/30 p-4 border border-dark-border">
+                  <div className="text-2xl font-black text-white">{fighter.submissions}</div>
+                  <div className="text-xs uppercase text-gray-500">Submissions</div>
+                </div>
+              </div>
+
+              <div className="prose prose-invert max-w-none">
+                <p className="text-gray-300 leading-relaxed">{fighter.bio}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Stats Card */}
           <div className="space-y-4">
-            {fighter.recentFights.map((fight, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.4 + i * 0.1 }}
-                className={`flex items-center justify-between p-4 border rounded-lg ${
-                  fight.result === 'WIN'
-                    ? 'border-green-500/30 bg-green-950/10'
-                    : fight.result === 'LOSS'
-                    ? 'border-red-500/30 bg-red-950/10'
-                    : 'border-yellow-500/30 bg-yellow-950/10'
-                }`}
-              >
+            <div className="bg-dark-surface border border-dark-border p-6">
+              <h3 className="text-xl font-black uppercase mb-4 text-gold">Fighter Stats</h3>
+              
+              <div className="space-y-4">
                 <div>
-                  <span className="text-gray-400">vs </span>
-                  <span className="font-bold text-lg">{fight.opponent}</span>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-400">Win Rate</span>
+                    <span className="font-bold text-blood">{winRate}%</span>
+                  </div>
+                  <div className="h-2 bg-black/50 rounded-full overflow-hidden">
+                    <div className="h-full bg-gradient-to-r from-blood to-gold" style={{ width: `${winRate}%` }} />
+                  </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="text-sm text-gray-400">
-                    {fight.method} (R{fight.rounds})
-                  </span>
-                  <span
-                    className={`font-black px-3 py-1 rounded text-sm ${
-                      fight.result === 'WIN'
-                        ? 'bg-green-500/20 text-green-500'
-                        : fight.result === 'LOSS'
-                        ? 'bg-red-500/20 text-red-500'
-                        : 'bg-yellow-500/20 text-yellow-500'
-                    }`}
-                  >
-                    {fight.result}
-                  </span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* Actions */}
-        <div className="flex gap-4 justify-center mt-12">
-          <Link href="/">
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 border-2 border-red-500 hover:bg-red-500/20 text-red-500 font-black rounded-lg transition-colors"
-            >
-              BACK TO HOME
-            </motion.button>
-          </Link>
+                <div>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-400">KO Rate</span>
+                    <span className="font-bold text-blood">{koRate}%</span>
+                  </div>
+                  <div className="h-2 bg-black/50 rounded-full overflow-hidden">
+                    <div className="h-full bg-blood" style={{ width: `${koRate}%` }} />
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-dark-border space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Height</span>
+                    <span className="font-bold">{fighter.height} cm</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Weight</span>
+                    <span className="font-bold">{fighter.weight} kg</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Reach</span>
+                    <span className="font-bold">{fighter.reach} cm</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Age</span>
+                    <span className="font-bold">{fighter.age}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Country</span>
+                    <span className="font-bold">{fighter.country}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-400 text-sm uppercase">Style</span>
+                    <span className="font-bold text-blood">{fighter.fightingStyle}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <Link href={`/fight/new?fighter=${fighter.id}`} className="block w-full bg-blood hover:bg-blood/80 text-white font-black uppercase py-4 text-center transition-colors border-2 border-blood hover:border-gold">
+              Challenge Fighter
+            </Link>
+          </div>
+        </div>
+
+        {/* Fight History */}
+        <div className="bg-dark-surface border border-dark-border p-8">
+          <h2 className="text-3xl font-black uppercase mb-6 text-blood">Fight History</h2>
+          
+          {fights.length === 0 ? (
+            <div className="text-center text-gray-500 py-8 uppercase">No fights recorded</div>
+          ) : (
+            <div className="space-y-3">
+              {fights.map((fight, idx) => (
+                <Link 
+                  key={idx}
+                  href={`/fight/${fight.id}`}
+                  className="block bg-black/30 border border-dark-border p-4 hover:border-blood transition-colors group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-6">
+                      <div className={`text-2xl font-black uppercase ${
+                        fight.result === 'WIN' ? 'text-gold' : 
+                        fight.result === 'LOSS' ? 'text-blood' : 
+                        'text-gray-500'
+                      }`}>
+                        {fight.result}
+                      </div>
+                      <div>
+                        <div className="font-bold group-hover:text-blood transition-colors">vs {fight.opponent}</div>
+                        <div className="text-sm text-gray-500">{fight.method} • Round {fight.round}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-bold uppercase text-gray-400">{fight.event}</div>
+                      <div className="text-xs text-gray-600">{new Date(fight.date).toLocaleDateString()}</div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
+  )
 }
