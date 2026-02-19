@@ -70,10 +70,11 @@ export async function POST(req: NextRequest) {
         message: 'Invitation sent to human',
       },
     });
-  } catch (error: any) {
-    console.error('AI signup error:', error);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to create fighter account';
+    console.error('AI signup error:', message);
     return NextResponse.json(
-      { error: error.message || 'Failed to create fighter account' },
+      { error: message },
       { status: 500 }
     );
   }

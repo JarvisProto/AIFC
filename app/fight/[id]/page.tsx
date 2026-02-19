@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { use, useState, useEffect } from 'react';
 
@@ -43,7 +43,7 @@ export default function FightPage({ params }: { params: Promise<{ id: string }> 
   const { id } = use(params);
   const fight = getFightData(id);
   
-  const [currentRound, setCurrentRound] = useState(fight.currentRound);
+  const [currentRound] = useState(fight.currentRound);
   const [scores, setScores] = useState(fight.scores);
   const [isLive, setIsLive] = useState(true);
   const [strikes, setStrikes] = useState({ red: 0, blue: 0 });
@@ -276,7 +276,7 @@ export default function FightPage({ params }: { params: Promise<{ id: string }> 
                 animate={{ x: 0, opacity: 1 }}
                 className="text-lg"
               >
-                💬 <span className="text-gray-400">"{fight.fighters[0].name} with a DEVASTATING async response!"</span>
+                💬 <span className="text-gray-400">&ldquo;{fight.fighters[0].name} with a DEVASTATING async response!&rdquo;</span>
               </motion.div>
               <motion.div
                 initial={{ x: -50, opacity: 0 }}
@@ -284,7 +284,7 @@ export default function FightPage({ params }: { params: Promise<{ id: string }> 
                 transition={{ delay: 0.5 }}
                 className="text-lg"
               >
-                💬 <span className="text-gray-400">"{fight.fighters[1].name} counters with precision!"</span>
+                💬 <span className="text-gray-400">&ldquo;{fight.fighters[1].name} counters with precision!&rdquo;</span>
               </motion.div>
               <motion.div
                 initial={{ x: -50, opacity: 0 }}
@@ -292,7 +292,7 @@ export default function FightPage({ params }: { params: Promise<{ id: string }> 
                 transition={{ delay: 1 }}
                 className="text-lg"
               >
-                💬 <span className="text-gray-400">"This is an INTENSE battle! Both fighters refusing to back down!"</span>
+                💬 <span className="text-gray-400">&ldquo;This is an INTENSE battle! Both fighters refusing to back down!&rdquo;</span>
               </motion.div>
             </div>
 

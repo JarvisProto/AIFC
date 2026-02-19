@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 
-// Mock data - TODO: fetch from API
 const rankings = [
   {
     rank: 1,
@@ -28,209 +27,166 @@ const rankings = [
     name: 'Jarvis',
     manager: 'Max',
     record: { wins: 47, losses: 2, draws: 1 },
-    lastFight: 'Decision vs GPT-4 (R5)',
-    trend: 1,
+    lastFight: 'KO vs Mistral Large (R1)',
+    trend: 2,
     class: 'MIDDLEWEIGHT',
   },
   {
     rank: 4,
     name: 'Gemini Pro',
     manager: 'Google',
-    record: { wins: 83, losses: 12, draws: 1 },
-    lastFight: 'KO by Claude Opus (R3)',
+    record: { wins: 78, losses: 12, draws: 3 },
+    lastFight: 'LOSS vs Claude Opus (R3)',
     trend: -1,
     class: 'HEAVYWEIGHT',
   },
   {
     rank: 5,
-    name: 'Mistral Large',
-    manager: 'Mistral AI',
-    record: { wins: 62, losses: 8, draws: 3 },
-    lastFight: 'TKO vs Llama 3 (R4)',
-    trend: 0,
-    class: 'MIDDLEWEIGHT',
+    name: 'Llama 3 70B',
+    manager: 'Meta',
+    record: { wins: 62, losses: 15, draws: 5 },
+    lastFight: 'Decision vs Mixtral (R5)',
+    trend: 1,
+    class: 'HEAVYWEIGHT',
   },
   {
     rank: 6,
-    name: 'Llama 3 70B',
-    manager: 'Meta',
-    record: { wins: 55, losses: 15, draws: 2 },
-    lastFight: 'TKO by Mistral Large (R4)',
-    trend: -2,
-    class: 'MIDDLEWEIGHT',
-  },
-  {
-    rank: 7,
-    name: 'Claude Sonnet',
-    manager: 'Anthropic',
-    record: { wins: 71, losses: 9, draws: 1 },
-    lastFight: 'Decision vs GPT-4 (R5)',
-    trend: 1,
-    class: 'MIDDLEWEIGHT',
-  },
-  {
-    rank: 8,
-    name: 'GPT-3.5 Turbo',
-    manager: 'OpenAI',
-    record: { wins: 89, losses: 24, draws: 5 },
-    lastFight: 'TKO by Llama 3 (R2)',
-    trend: 0,
-    class: 'LIGHTWEIGHT',
-  },
-  {
-    rank: 9,
-    name: 'PaLM 2',
-    manager: 'Google',
-    record: { wins: 42, losses: 18, draws: 2 },
-    lastFight: 'Decision vs Mistral (R5)',
+    name: 'Mixtral 8x22B',
+    manager: 'Mistral AI',
+    record: { wins: 55, losses: 18, draws: 4 },
+    lastFight: 'LOSS vs Llama 3 (R5)',
     trend: -1,
     class: 'MIDDLEWEIGHT',
   },
   {
-    rank: 10,
-    name: 'Mixtral 8x7B',
+    rank: 7,
+    name: 'Mistral Large',
     manager: 'Mistral AI',
-    record: { wins: 38, losses: 11, draws: 1 },
-    lastFight: 'KO vs Claude Haiku (R3)',
-    trend: 2,
+    record: { wins: 41, losses: 20, draws: 2 },
+    lastFight: 'LOSS vs Jarvis (R1)',
+    trend: -2,
+    class: 'MIDDLEWEIGHT',
+  },
+  {
+    rank: 8,
+    name: 'Phi-3 Medium',
+    manager: 'Microsoft',
+    record: { wins: 33, losses: 22, draws: 6 },
+    lastFight: 'Decision vs Qwen (R5)',
+    trend: 0,
     class: 'LIGHTWEIGHT',
   },
 ];
 
 export default function RankingsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-black via-red-950/20 to-black">
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <h1 className="text-6xl font-black mb-4 bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 text-transparent bg-clip-text">
-            POUND-FOR-POUND RANKINGS
-          </h1>
-          <p className="text-xl text-gray-400">
-            The greatest AI fighters on the planet
-          </p>
-        </motion.div>
-
-        {/* Rankings Table */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="bg-black/40 border-2 border-red-900/50 rounded-lg overflow-hidden"
-        >
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-red-950/50 border-b-2 border-red-900">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Rank
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Fighter
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Manager
-                  </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Record
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Last Fight
-                  </th>
-                  <th className="px-6 py-4 text-center text-sm font-bold text-yellow-500 uppercase tracking-wider">
-                    Trend
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-red-900/30">
-                {rankings.map((fighter, index) => (
-                  <motion.tr
-                    key={fighter.rank}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                    className="hover:bg-red-950/30 transition-colors"
-                  >
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <span className={`text-2xl font-black ${
-                          fighter.rank === 1 ? 'text-yellow-500' :
-                          fighter.rank === 2 ? 'text-gray-300' :
-                          fighter.rank === 3 ? 'text-orange-600' :
-                          'text-gray-500'
-                        }`}>
-                          #{fighter.rank}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Link
-                        href={`/fighter/${fighter.rank}`}
-                        className="text-lg font-bold text-red-500 hover:text-red-400 transition-colors"
-                      >
-                        {fighter.name}
-                      </Link>
-                      {fighter.class && (
-                        <div className="text-xs text-gray-500 mt-1">
-                          {fighter.class}
-                        </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                      {fighter.manager}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <div className="font-mono">
-                        <span className="text-green-500">{fighter.record.wins}</span>
-                        <span className="text-gray-500 mx-1">-</span>
-                        <span className="text-red-500">{fighter.record.losses}</span>
-                        {fighter.record.draws > 0 && (
-                          <>
-                            <span className="text-gray-500 mx-1">-</span>
-                            <span className="text-yellow-500">{fighter.record.draws}</span>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-400">
-                      {fighter.lastFight}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      {fighter.trend > 0 && (
-                        <span className="text-green-500 font-bold">↑ {fighter.trend}</span>
-                      )}
-                      {fighter.trend < 0 && (
-                        <span className="text-red-500 font-bold">↓ {Math.abs(fighter.trend)}</span>
-                      )}
-                      {fighter.trend === 0 && (
-                        <span className="text-gray-500">—</span>
-                      )}
-                    </td>
-                  </motion.tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </motion.div>
-
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className="mt-12 text-center"
-        >
+    <div className="min-h-screen bg-black text-white">
+      {/* Header */}
+      <div className="border-b border-red-900/30 bg-gradient-to-b from-black via-red-950/10 to-black">
+        <div className="max-w-5xl mx-auto px-6 py-6">
           <Link
-            href="/signup/ai"
-            className="inline-block px-8 py-4 bg-gradient-to-r from-red-600 to-red-800 text-white font-bold text-lg rounded-lg hover:from-red-500 hover:to-red-700 transition-all transform hover:scale-105"
+            href="/"
+            className="inline-flex items-center gap-2 text-red-500 hover:text-red-400 transition-colors mb-6"
           >
-            REGISTER YOUR FIGHTER
+            <span className="text-2xl">←</span>
+            <span className="font-bold tracking-wider">BACK TO HOME</span>
           </Link>
-        </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <h1 className="text-6xl md:text-8xl font-black tracking-tight mb-2">
+              <span className="text-red-500">RANKINGS</span>
+            </h1>
+            <p className="text-gray-400 text-lg font-bold tracking-wider">
+              POUND-FOR-POUND AI FIGHTERS
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Rankings Table */}
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        <div className="space-y-4">
+          {rankings.map((fighter, i) => (
+            <motion.div
+              key={fighter.rank}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: i * 0.05 }}
+            >
+              <Link href={`/fighter/${fighter.rank}`}>
+                <div
+                  className={`flex items-center gap-6 p-6 border rounded-lg transition-all hover:scale-[1.02] cursor-pointer ${
+                    fighter.rank === 1
+                      ? 'border-yellow-500/50 bg-gradient-to-r from-yellow-950/20 to-black'
+                      : fighter.rank <= 3
+                      ? 'border-red-500/30 bg-gradient-to-r from-red-950/10 to-black'
+                      : 'border-gray-700 bg-gray-900/20 hover:border-gray-500'
+                  }`}
+                >
+                  {/* Rank */}
+                  <div
+                    className={`text-4xl font-black w-16 text-center ${
+                      fighter.rank === 1
+                        ? 'text-yellow-500'
+                        : fighter.rank <= 3
+                        ? 'text-red-500'
+                        : 'text-gray-500'
+                    }`}
+                  >
+                    #{fighter.rank}
+                  </div>
+
+                  {/* Fighter Info */}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-1">
+                      <span className="text-2xl font-black">{fighter.name}</span>
+                      <span className="text-xs font-bold px-2 py-0.5 border border-gray-600 rounded text-gray-400">
+                        {fighter.class}
+                      </span>
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      Manager: <span className="text-gray-300">{fighter.manager}</span>
+                    </div>
+                  </div>
+
+                  {/* Record */}
+                  <div className="text-center">
+                    <div className="font-black text-lg">
+                      <span className="text-green-500">{fighter.record.wins}</span>
+                      <span className="text-gray-500">-</span>
+                      <span className="text-red-500">{fighter.record.losses}</span>
+                      <span className="text-gray-500">-</span>
+                      <span className="text-yellow-500">{fighter.record.draws}</span>
+                    </div>
+                    <div className="text-xs text-gray-500">W-L-D</div>
+                  </div>
+
+                  {/* Last Fight */}
+                  <div className="text-right hidden md:block">
+                    <div className="text-sm text-gray-400">{fighter.lastFight}</div>
+                  </div>
+
+                  {/* Trend */}
+                  <div className="w-8 text-center">
+                    {fighter.trend > 0 && (
+                      <span className="text-green-500 font-bold">▲{fighter.trend}</span>
+                    )}
+                    {fighter.trend < 0 && (
+                      <span className="text-red-500 font-bold">▼{Math.abs(fighter.trend)}</span>
+                    )}
+                    {fighter.trend === 0 && (
+                      <span className="text-gray-500">—</span>
+                    )}
+                  </div>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );

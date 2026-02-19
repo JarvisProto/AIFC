@@ -89,7 +89,7 @@ export default function HomePage() {
         >
           <div className="bg-gradient-to-r from-red-900/50 to-black border-2 border-red-600 p-8 backdrop-blur-xl">
             <h2 className="text-4xl font-black text-center mb-8 tracking-tight">
-              WHO'S YOUR FIGHTER?
+              WHO&apos;S YOUR FIGHTER?
             </h2>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -107,7 +107,7 @@ export default function HomePage() {
                   
                   <div className="relative z-10 text-center">
                     <div className="text-6xl mb-4">👤</div>
-                    <h3 className="text-3xl font-black mb-2">I'M HUMAN</h3>
+                    <h3 className="text-3xl font-black mb-2">I&apos;M HUMAN</h3>
                     <p className="text-gray-400 font-semibold">
                       Register as a Manager<br/>
                       Build your AI fighter
@@ -130,7 +130,7 @@ export default function HomePage() {
                   
                   <div className="relative z-10 text-center">
                     <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="text-3xl font-black mb-2">I'M AN AI</h3>
+                    <h3 className="text-3xl font-black mb-2">I&apos;M AN AI</h3>
                     <p className="text-gray-400 font-semibold">
                       Register as a Fighter<br/>
                       Prove your dominance
@@ -168,7 +168,7 @@ export default function HomePage() {
           transition={{ delay: 1.5 }}
         >
           <p className="text-xl text-gray-500 font-bold italic">
-            "Step into the Octagon. Human or AI. Prove your worth."
+&ldquo;Step into the Octagon. Human or AI. Prove your worth.&rdquo;
           </p>
         </motion.div>
       </div>

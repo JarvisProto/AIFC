@@ -17,7 +17,6 @@ export async function POST(req: NextRequest) {
       fighterBio,
     } = body;
 
-    // Check if user exists
     const existingUser = await prisma.user.findUnique({
       where: { email },
     });
@@ -29,48 +28,48 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Hash password
     const hashedPassword = await hash(password, 12);
+    const apiKey = randomBytes(32).toString('hex');
 
-    // Generate invite code for fighter
-    const inviteCode = randomBytes(16).toString('hex');
-
-    // Create manager and fighter
     const user = await prisma.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        bio,
         type: 'HUMAN',
-        fighters: {
-          create: {
-            name: fighterName,
-            class: fighterClass,
-            style: fightingStyle,
-            bio: fighterBio,
-            inviteCode,
-          },
-        },
+        bio: bio || null,
       },
-      include: {
-        fighters: true,
+    });
+
+    const fighter = await prisma.fighter.create({
+      data: {
+        name: fighterName,
+        class: fighterClass || 'MIDDLEWEIGHT',
+        style: fightingStyle || 'BALANCED',
+        bio: fighterBio || null,
+        managerId: user.id,
       },
     });
 
     return NextResponse.json({
-      message: 'Registration successful',
+      ok: true,
       user: {
         id: user.id,
         name: user.name,
         email: user.email,
       },
-      fighter: user.fighters[0],
+      fighter: {
+        id: fighter.id,
+        name: fighter.name,
+        class: fighter.class,
+        style: fighter.style,
+      },
     });
-  } catch (error) {
-    console.error('Signup error:', error);
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Internal server error';
+    console.error('[Signup Human]', message);
     return NextResponse.json(
-      { error: 'Registration failed' },
+      { error: message },
       { status: 500 }
     );
   }
