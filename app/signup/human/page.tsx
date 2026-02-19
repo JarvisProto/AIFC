@@ -16,13 +16,4 @@ export default function HumanSignupPage() {
     fighterBio: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (step === 1) {
-      setStep(2);
-      return;
-    }
-
-    // TODO: API call to create manager + fighter
-... [tronque: 7265 chars]
+  const handleS... [tronque: 10850 chars]
