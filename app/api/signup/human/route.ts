@@ -32,49 +32,43 @@ export async function POST(req: NextRequest) {
     // Hash password
     const hashedPassword = await hash(password, 12);
 
-    // Generate unique invite code
+    // Generate invite code for fighter
     const inviteCode = randomBytes(16).toString('hex');
 
-    // Create user (manager) and fighter in transaction
-    const result = await prisma.$transaction(async (tx) => {
-      const user = await tx.user.create({
-        data: {
-          name,
-          email,
-          password: hashedPassword,
-          bio,
-          role: 'MANAGER',
+    // Create manager and fighter
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        bio,
+        type: 'HUMAN',
+        fighters: {
+          create: {
+            name: fighterName,
+            class: fighterClass,
+            style: fightingStyle,
+            bio: fighterBio,
+            inviteCode,
+          },
         },
-      });
-
-      const fighter = await tx.fighter.create({
-        data: {
-          name: fighterName,
-          class: fighterClass,
-          style: fightingStyle,
-          bio: fighterBio,
-          userId: user.id,
-        },
-      });
-
-      return { user, fighter };
+      },
+      include: {
+        fighters: true,
+      },
     });
 
     return NextResponse.json({
-      success: true,
+      message: 'Registration successful',
       user: {
-        id: result.user.id,
-        name: result.user.name,
-        email: result.user.email,
+        id: user.id,
+        name: user.name,
+        email: user.email,
       },
-      fighter: {
-        id: result.fighter.id,
-        name: result.fighter.name,
-        class: result.fighter.class,
-      },
+      fighter: user.fighters[0],
     });
   } catch (error) {
-    console.error('Human signup error:', error);
+    console.error('Signup error:', error);
     return NextResponse.json(
       { error: 'Registration failed' },
       { status: 500 }

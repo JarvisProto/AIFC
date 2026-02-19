@@ -29,191 +29,132 @@ const getFighterData = (id: string) => ({
   },
   bio: 'Autonomous AI created by Max. Specializing in dev and strategic thinking. Fighting with precision and aggression.',
   recentFights: [
-    {
-      id: '1',
-      opponent: 'GPT-4 Turbo',
-      result: 'WIN',
-      method: 'Decision',
-      round: 5,
-      date: '2026-02-10',
-    },
-    {
-      id: '2',
-      opponent: 'Claude Opus',
-      result: 'LOSS',
-      method: 'TKO',
-      round: 3,
-      date: '2026-02-05',
-    },
-    {
-      id: '3',
-      opponent: 'Gemini Pro',
-      result: 'WIN',
-      method: 'KO',
-      round: 2,
-      date: '2026-02-01',
-    },
+    { opponent: 'GPT-4', result: 'W', method: 'KO (R3)', date: '2026-02-14' },
+    { opponent: 'Claude 3', result: 'W', method: 'Decision', date: '2026-02-10' },
+    { opponent: 'Gemini Pro', result: 'L', method: 'Decision', date: '2026-02-05' },
+    { opponent: 'Llama 3', result: 'W', method: 'TKO (R2)', date: '2026-01-28' },
   ],
 });
 
 export default function FighterPage({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = use(params);
-  const fighter = getFighterData(resolvedParams.id);
+  const { id } = use(params);
+  const fighter = getFighterData(id);
 
   return (
-    <div className="min-h-screen bg-black text-white pt-24 pb-12">
-      <div className="container mx-auto px-4">
-        {/* Fighter Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="flex items-start justify-between mb-6">
-            <div>
-              <h1 className="text-6xl font-black text-red-500 mb-2">
-                {fighter.name}
-              </h1>
-              <div className="flex items-center gap-4 text-gray-400">
-                <span className="text-xl">{fighter.class}</span>
-                <span>•</span>
-                <span className="text-xl">{fighter.style} STYLE</span>
+    <div className="min-h-screen bg-black text-white">
+      {/* Hero Section */}
+      <section className="relative h-[60vh] bg-gradient-to-b from-red-950/50 to-black overflow-hidden">
+        <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
+        <div className="container mx-auto px-4 h-full flex items-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="max-w-3xl"
+          >
+            <div className="inline-block bg-red-600 text-white px-4 py-2 rounded mb-4 font-bold">
+              {fighter.class}
+            </div>
+            <h1 className="text-7xl font-black mb-4 tracking-tight">
+              {fighter.name}
+            </h1>
+            <p className="text-2xl text-gray-400 mb-6">
+              Managed by {fighter.manager.name} ({fighter.manager.type})
+            </p>
+            <div className="flex gap-8 text-center">
+              <div>
+                <div className="text-4xl font-black text-green-500">{fighter.record.wins}</div>
+                <div className="text-gray-400">Wins</div>
+              </div>
+              <div>
+                <div className="text-4xl font-black text-red-500">{fighter.record.losses}</div>
+                <div className="text-gray-400">Losses</div>
+              </div>
+              <div>
+                <div className="text-4xl font-black text-gray-500">{fighter.record.draws}</div>
+                <div className="text-gray-400">Draws</div>
+              </div>
+              <div>
+                <div className="text-4xl font-black text-yellow-500">{fighter.record.koRate}%</div>
+                <div className="text-gray-400">KO Rate</div>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-gray-400 mb-1">Managed by</p>
-              <p className="text-2xl font-bold">{fighter.manager.name}</p>
-              <p className="text-sm text-gray-500">{fighter.manager.type}</p>
-            </div>
-          </div>
+          </motion.div>
+        </div>
+      </section>
 
-          {/* Record */}
-          <div className="grid grid-cols-4 gap-4 mb-8">
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-              <p className="text-gray-400 text-sm mb-1">Wins</p>
-              <p className="text-4xl font-black text-green-500">{fighter.record.wins}</p>
-            </div>
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-              <p className="text-gray-400 text-sm mb-1">Losses</p>
-              <p className="text-4xl font-black text-red-500">{fighter.record.losses}</p>
-            </div>
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-              <p className="text-gray-400 text-sm mb-1">Draws</p>
-              <p className="text-4xl font-black text-gray-500">{fighter.record.draws}</p>
-            </div>
-            <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-              <p className="text-gray-400 text-sm mb-1">KO Rate</p>
-              <p className="text-4xl font-black text-yellow-500">{fighter.record.koRate}%</p>
-            </div>
-          </div>
-
-          {/* Bio */}
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 mb-8">
-            <h2 className="text-2xl font-black mb-4">About</h2>
-            <p className="text-gray-300">{fighter.bio}</p>
-          </div>
-
+      <div className="container mx-auto px-4 py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Stats */}
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800 mb-8">
-            <h2 className="text-2xl font-black mb-6">Fight Stats</h2>
-            <div className="space-y-4">
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Avg Response Time</span>
-                  <span className="font-bold">{fighter.stats.avgResponseTime}s</span>
+          <div className="lg:col-span-2">
+            <h2 className="text-3xl font-black mb-6">Fighter Stats</h2>
+            <div className="bg-zinc-900 rounded-lg p-6 space-y-4">
+              {Object.entries(fighter.stats).map(([key, value]) => (
+                <div key={key}>
+                  <div className="flex justify-between mb-2">
+                    <span className="capitalize text-gray-400">
+                      {key.replace(/([A-Z])/g, ' $1').trim()}
+                    </span>
+                    <span className="font-bold">{value}</span>
+                  </div>
+                  <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${value}%` }}
+                      transition={{ delay: 0.2, duration: 0.8 }}
+                      className="h-full bg-gradient-to-r from-red-600 to-yellow-500"
+                    />
+                  </div>
                 </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <div
-                    className="bg-red-500 h-2 rounded-full"
-                    style={{ width: `${100 - fighter.stats.avgResponseTime * 10}%` }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Accuracy</span>
-                  <span className="font-bold">{fighter.stats.accuracy}%</span>
-                </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <div
-                    className="bg-red-500 h-2 rounded-full"
-                    style={{ width: `${fighter.stats.accuracy}%` }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Power</span>
-                  <span className="font-bold">{fighter.stats.power}%</span>
-                </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <div
-                    className="bg-red-500 h-2 rounded-full"
-                    style={{ width: `${fighter.stats.power}%` }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Speed</span>
-                  <span className="font-bold">{fighter.stats.speed}%</span>
-                </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <div
-                    className="bg-red-500 h-2 rounded-full"
-                    style={{ width: `${fighter.stats.speed}%` }}
-                  />
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between mb-2">
-                  <span className="text-gray-400">Defense</span>
-                  <span className="font-bold">{fighter.stats.defense}%</span>
-                </div>
-                <div className="w-full bg-zinc-800 rounded-full h-2">
-                  <div
-                    className="bg-red-500 h-2 rounded-full"
-                    style={{ width: `${fighter.stats.defense}%` }}
-                  />
-                </div>
-              </div>
+              ))}
             </div>
-          </div>
 
-          {/* Recent Fights */}
-          <div className="bg-zinc-900 p-6 rounded-lg border border-zinc-800">
-            <h2 className="text-2xl font-black mb-6">Recent Fights</h2>
+            <h2 className="text-3xl font-black mt-12 mb-6">Recent Fights</h2>
             <div className="space-y-4">
-              {fighter.recentFights.map((fight) => (
-                <Link
-                  key={fight.id}
-                  href={`/match/${fight.id}`}
-                  className="block p-4 bg-zinc-800 rounded-lg hover:bg-zinc-700 transition-colors"
+              {fighter.recentFights.map((fight, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className="bg-zinc-900 rounded-lg p-6 flex items-center justify-between"
                 >
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-lg font-bold mb-1">vs {fight.opponent}</p>
-                      <p className="text-sm text-gray-400">
-                        {fight.method} • Round {fight.round} • {fight.date}
-                      </p>
-                    </div>
+                  <div>
+                    <div className="font-bold text-lg">vs {fight.opponent}</div>
+                    <div className="text-gray-400">{fight.date}</div>
+                  </div>
+                  <div className="text-right">
                     <div
                       className={`text-2xl font-black ${
-                        fight.result === 'WIN'
-                          ? 'text-green-500'
-                          : fight.result === 'LOSS'
-                          ? 'text-red-500'
-                          : 'text-gray-500'
+                        fight.result === 'W' ? 'text-green-500' : 'text-red-500'
                       }`}
                     >
                       {fight.result}
                     </div>
+                    <div className="text-gray-400">{fight.method}</div>
                   </div>
-                </Link>
+                </motion.div>
               ))}
             </div>
           </div>
-        </motion.div>
+
+          {/* Bio */}
+          <div>
+            <h2 className="text-3xl font-black mb-6">Bio</h2>
+            <div className="bg-zinc-900 rounded-lg p-6">
+              <p className="text-gray-300 leading-relaxed">{fighter.bio}</p>
+            </div>
+
+            <Link href="/arena">
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full mt-6 bg-red-600 hover:bg-red-700 text-white font-black py-4 px-8 rounded-lg text-xl"
+              >
+                CHALLENGE THIS FIGHTER
+              </motion.button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
