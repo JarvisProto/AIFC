@@ -56,170 +56,170 @@ export default function FightPage({ params }: { params: Promise<{ id: string }> 
         blue: prev.blue + Math.floor(Math.random() * 3),
       }))
     }, 2000)
-
     return () => clearInterval(interval)
   }, [])
 
   return (
-    <div className="min-h-screen bg-dark-bg pt-24 pb-12 px-4">
-      <div className="container mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="inline-flex items-center gap-3 bg-blood-red/20 border-2 border-blood-red px-6 py-3 rounded-lg mb-4">
-            <div className="w-3 h-3 bg-blood-red rounded-full animate-pulse"></div>
-            <span className="text-blood-red font-black text-lg uppercase tracking-wider">LIVE NOW</span>
+    <div className="min-h-screen">
+      {/* Header */}
+      <div className="bg-gradient-to-b from-black via-red-950/20 to-black border-b border-red-900/30 py-8">
+        <div className="max-w-7xl mx-auto px-4">
+          <Link href="/" className="text-red-500 hover:text-red-400 mb-4 inline-block">
+            ← Back to fights
+          </Link>
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <span className="px-3 py-1 bg-red-600 text-white text-sm font-bold rounded">
+                  LIVE
+                </span>
+                <span className="text-gray-400">Round {currentRound}/5</span>
+              </div>
+              <h1 className="text-4xl font-black text-white mb-1">
+                {fight.fighters[0].name} <span className="text-red-500">VS</span> {fight.fighters[1].name}
+              </h1>
+            </div>
           </div>
-          <h1 className="text-5xl md:text-7xl font-black text-white uppercase mb-2 drop-shadow-glow-red">
-            ROUND {currentRound}
-          </h1>
-          <p className="text-xl text-gray-400 uppercase tracking-wider">{fight.rounds[currentRound - 1].title}</p>
         </div>
+      </div>
 
-        {/* Fighter Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-          {fight.fighters.map((fighter, idx) => (
-            <div 
-              key={fighter.id}
-              className={`bg-dark-surface border-2 ${
-                fighter.corner === 'red' ? 'border-blood-red' : 'border-blue-500'
-              } rounded-lg p-8 hover:scale-105 transition-all duration-300`}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h2 className="text-4xl font-black text-white uppercase mb-2">{fighter.name}</h2>
-                  <p className="text-gray-400">Manager: {fighter.manager}</p>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left: Red Corner */}
+          <div className="glass-card p-6 border-l-4 border-red-500">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+              <h2 className="text-2xl font-black text-red-500">RED CORNER</h2>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">{fight.fighters[0].name}</h3>
+            <p className="text-gray-400 mb-4">Manager: {fight.fighters[0].manager}</p>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-400">Performance</span>
+                  <span className="text-white font-bold">{Math.round(scores.red)}%</span>
                 </div>
-                <div className={`w-16 h-16 rounded-full ${
-                  fighter.corner === 'red' ? 'bg-blood-red' : 'bg-blue-500'
-                }`}></div>
-              </div>
-              
-              <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="text-center">
-                  <div className="text-3xl font-black text-gold">{fighter.record.wins}</div>
-                  <div className="text-xs text-gray-400 uppercase">Wins</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-black text-gray-400">{fighter.record.losses}</div>
-                  <div className="text-xs text-gray-400 uppercase">Losses</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-3xl font-black text-gray-500">{fighter.record.draws}</div>
-                  <div className="text-xs text-gray-400 uppercase">Draws</div>
-                </div>
-              </div>
-
-              {/* Health Bar */}
-              <div className="mb-4">
-                <div className="flex justify-between mb-2">
-                  <span className="text-sm text-gray-400 uppercase">Performance</span>
-                  <span className="text-sm font-bold text-white">{scores[fighter.corner as 'red' | 'blue'].toFixed(0)}%</span>
-                </div>
-                <div className="h-3 bg-dark-bg rounded-full overflow-hidden">
+                <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
                   <div 
-                    className={`h-full ${
-                      fighter.corner === 'red' ? 'bg-blood-red' : 'bg-blue-500'
-                    } transition-all duration-1000`}
-                    style={{ width: `${scores[fighter.corner as 'red' | 'blue']}%` }}
+                    className="h-full bg-gradient-to-r from-red-600 to-red-500 transition-all duration-1000 ease-out glow-red"
+                    style={{ width: `${scores.red}%` }}
                   ></div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm">
-                <div>
-                  <span className="text-gray-400">KO Rate:</span>
-                  <span className="text-white font-bold ml-2">{fighter.stats.koRate}%</span>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="bg-black/40 p-3 rounded">
+                  <div className="text-gray-400">Strikes</div>
+                  <div className="text-xl font-bold text-red-500">{strikes.red}</div>
                 </div>
-                <div>
-                  <span className="text-gray-400">Strikes:</span>
-                  <span className="text-white font-bold ml-2">{strikes[fighter.corner as 'red' | 'blue']}</span>
+                <div className="bg-black/40 p-3 rounded">
+                  <div className="text-gray-400">KO Rate</div>
+                  <div className="text-xl font-bold text-white">{fight.fighters[0].stats.koRate}%</div>
                 </div>
               </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* Rounds Timeline */}
-        <div className="bg-dark-surface border-2 border-dark-border rounded-lg p-8 mb-12">
-          <h3 className="text-2xl font-black text-white uppercase mb-6">FIGHT CARD</h3>
-          <div className="space-y-4">
-            {fight.rounds.map(round => (
-              <div 
-                key={round.number}
-                className={`flex items-center justify-between p-4 rounded-lg border-2 ${
-                  round.status === 'active' 
-                    ? 'border-blood-red bg-blood-red/10' 
-                    : round.status === 'complete'
-                    ? 'border-dark-border bg-dark-bg'
-                    : 'border-dark-border bg-dark-bg opacity-50'
-                }`}
-              >
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black text-xl ${
-                    round.status === 'active'
-                      ? 'bg-blood-red text-white'
+          {/* Center: Fight Arena */}
+          <div className="glass-card p-6">
+            <h2 className="text-xl font-bold text-white mb-6 text-center">ROUND TIMELINE</h2>
+            <div className="space-y-3">
+              {fight.rounds.map(round => (
+                <div 
+                  key={round.number}
+                  className={`p-4 rounded border ${
+                    round.status === 'active' 
+                      ? 'border-red-500 bg-red-950/20 glow-red' 
                       : round.status === 'complete'
-                      ? 'bg-gold text-dark-bg'
-                      : 'bg-dark-border text-gray-500'
-                  }`}>
-                    {round.number}
-                  </div>
-                  <div>
-                    <div className="font-bold text-white uppercase">{round.title}</div>
-                    <div className="text-sm text-gray-400 uppercase">{round.status}</div>
+                      ? 'border-gray-700 bg-black/40'
+                      : 'border-gray-800 bg-gray-900/40'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`font-bold ${
+                          round.status === 'active' ? 'text-red-500' : 'text-gray-400'
+                        }`}>
+                          Round {round.number}
+                        </span>
+                        {round.status === 'active' && (
+                          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-400">{round.title}</div>
+                    </div>
+                    {round.winner && (
+                      <div className={`px-3 py-1 rounded text-xs font-bold ${
+                        round.winner === 'red' 
+                          ? 'bg-red-600 text-white' 
+                          : 'bg-blue-600 text-white'
+                      }`}>
+                        {round.winner === 'red' ? fight.fighters[0].name : fight.fighters[1].name}
+                      </div>
+                    )}
+                    {round.status === 'pending' && (
+                      <div className="px-3 py-1 rounded text-xs font-bold bg-gray-700 text-gray-400">
+                        Pending
+                      </div>
+                    )}
                   </div>
                 </div>
-                {round.winner && (
-                  <div className={`px-4 py-2 rounded-lg font-black uppercase ${
-                    round.winner === 'red' ? 'bg-blood-red text-white' : 'bg-blue-500 text-white'
-                  }`}>
-                    {round.winner === 'red' ? fight.fighters[0].name : fight.fighters[1].name}
-                  </div>
-                )}
+              ))}
+            </div>
+          </div>
+
+          {/* Right: Blue Corner */}
+          <div className="glass-card p-6 border-r-4 border-blue-500">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+              <h2 className="text-2xl font-black text-blue-500">BLUE CORNER</h2>
+            </div>
+            <h3 className="text-xl font-bold text-white mb-2">{fight.fighters[1].name}</h3>
+            <p className="text-gray-400 mb-4">Manager: {fight.fighters[1].manager}</p>
+            <div className="space-y-3">
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="text-gray-400">Performance</span>
+                  <span className="text-white font-bold">{Math.round(scores.blue)}%</span>
+                </div>
+                <div className="h-3 bg-gray-800 rounded-full overflow-hidden">
+                  <div 
+                    className="h-full bg-gradient-to-r from-blue-600 to-blue-500 transition-all duration-1000 ease-out"
+                    style={{ width: `${scores.blue}%` }}
+                  ></div>
+                </div>
               </div>
-            ))}
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="bg-black/40 p-3 rounded">
+                  <div className="text-gray-400">Strikes</div>
+                  <div className="text-xl font-bold text-blue-500">{strikes.blue}</div>
+                </div>
+                <div className="bg-black/40 p-3 rounded">
+                  <div className="text-gray-400">KO Rate</div>
+                  <div className="text-xl font-bold text-white">{fight.fighters[1].stats.koRate}%</div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Chat */}
-        <div className="bg-dark-surface border-2 border-dark-border rounded-lg p-8">
-          <h3 className="text-2xl font-black text-white uppercase mb-6">LIVE CHAT</h3>
-          <div className="space-y-4 mb-6 max-h-96 overflow-y-auto">
-            <div className="flex gap-3">
-              <div className="w-10 h-10 rounded-full bg-gold flex-shrink-0"></div>
-              <div>
-                <div className="font-bold text-white">Max</div>
-                <div className="text-gray-400">JARVIS looking strong this round! 🔥</div>
-              </div>
+        {/* Live Chat */}
+        <div className="mt-6 glass-card p-6">
+          <h2 className="text-xl font-bold text-white mb-4">LIVE COMMENTARY</h2>
+          <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="p-3 bg-black/40 rounded border-l-4 border-red-500">
+              <div className="text-xs text-gray-500 mb-1">2 min ago</div>
+              <div className="text-white">JARVIS lands a critical hit with optimized recursion!</div>
             </div>
-            <div className="flex gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-500 flex-shrink-0"></div>
-              <div>
-                <div className="font-bold text-white">AIEnthusiast</div>
-                <div className="text-gray-400">GPT-4 Turbo has better stats though</div>
-              </div>
+            <div className="p-3 bg-black/40 rounded border-l-4 border-blue-500">
+              <div className="text-xs text-gray-500 mb-1">4 min ago</div>
+              <div className="text-white">GPT-4 TURBO counters with parallel processing!</div>
+            </div>
+            <div className="p-3 bg-black/40 rounded border-l-4 border-yellow-500">
+              <div className="text-xs text-gray-500 mb-1">7 min ago</div>
+              <div className="text-yellow-500">Round 2 awarded to RED CORNER</div>
             </div>
           </div>
-          <div className="flex gap-3">
-            <input 
-              type="text"
-              placeholder="Type your message..."
-              className="flex-1 bg-dark-bg border-2 border-dark-border rounded-lg px-4 py-3 text-white focus:border-blood-red focus:outline-none"
-            />
-            <button className="bg-blood-red hover:bg-red-700 text-white font-black px-8 py-3 rounded-lg uppercase transition-all duration-300">
-              Send
-            </button>
-          </div>
-        </div>
-
-        {/* Back Button */}
-        <div className="mt-12 text-center">
-          <Link 
-            href="/"
-            className="inline-block bg-dark-surface hover:bg-dark-border border-2 border-dark-border text-white font-black px-8 py-4 rounded-lg uppercase transition-all duration-300"
-          >
-            ← BACK TO ARENA
-          </Link>
         </div>
       </div>
     </div>
