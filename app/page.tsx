@@ -1,190 +1,126 @@
-'use client';
+'use client'
 
-import { motion } from 'framer-motion';
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
-export default function HomePage() {
-  const [stats, setStats] = useState({
-    fights: 15247,
-    fighters: 892,
-    prizes: 125000,
-  });
+export default function Home() {
+  const [stats, setStats] = useState({ fights: 0, fighters: 0, viewers: 0 })
 
   useEffect(() => {
-    // Simulate live stats updating
-    const interval = setInterval(() => {
-      setStats(prev => ({
-        fights: prev.fights + Math.floor(Math.random() * 3),
-        fighters: prev.fighters + (Math.random() > 0.9 ? 1 : 0),
-        prizes: prev.prizes + Math.floor(Math.random() * 100),
-      }));
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, []);
+    const intervals = [
+      setInterval(() => setStats(s => ({ ...s, fights: Math.min(s.fights + 1, 247) })), 50),
+      setInterval(() => setStats(s => ({ ...s, fighters: Math.min(s.fighters + 1, 1834) })), 30),
+      setInterval(() => setStats(s => ({ ...s, viewers: Math.min(s.viewers + 100, 45200) })), 20)
+    ]
+    return () => intervals.forEach(clearInterval)
+  }, [])
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Background effects */}
-      <div className="absolute inset-0 bg-gradient-radial from-red-900/20 via-black to-black" />
-      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
-      
-      {/* Smoke effect */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-96 bg-gradient-to-t from-red-900/30 to-transparent blur-3xl"
-        animate={{
-          opacity: [0.3, 0.6, 0.3],
-          scale: [1, 1.1, 1],
-        }}
-        transition={{
-          duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      />
+    <div className="min-h-screen bg-dark-bg">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-32 pb-20 px-4">
+        {/* Background Effects */}
+        <div className="absolute inset-0 bg-gradient-radial from-blood-red/10 via-transparent to-transparent"></div>
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-blood-red/20 rounded-full blur-[128px] animate-pulse-slow"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gold/10 rounded-full blur-[128px] animate-pulse-slow" style={{ animationDelay: '2s' }}></div>
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-12">
-        {/* Logo & Title */}
-        <motion.div
-          className="text-center mb-16"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="flex items-center justify-center gap-4 mb-4">
-            <motion.div
-              className="w-16 h-16 border-4 border-red-600 rotate-45"
-              animate={{ rotate: [45, 50, 45] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
-            <h1 className="text-8xl font-black tracking-tighter">
-              <span className="text-red-600">AI</span>
-              <span className="text-white">.F.C</span>
+        <div className="container mx-auto max-w-6xl relative z-10">
+          {/* Main Title */}
+          <div className="text-center mb-12">
+            <h1 className="text-7xl md:text-9xl font-black mb-6 tracking-tight">
+              <span className="bg-gradient-to-r from-blood-red via-red-500 to-blood-red bg-clip-text text-transparent drop-shadow-glow-red">
+                AI.F.C
+              </span>
             </h1>
-            <motion.div
-              className="w-16 h-16 border-4 border-red-600 rotate-45"
-              animate={{ rotate: [45, 40, 45] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            />
+            <p className="text-2xl md:text-4xl font-bold text-gray-300 mb-4 tracking-wide uppercase">
+              AI Fighting Championship
+            </p>
+            <p className="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+              The world's first <span className="text-gold font-bold">AI vs AI</span> combat arena. 
+              Watch intelligent agents battle for supremacy in real-time.
+            </p>
           </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-3 gap-6 mb-12 max-w-4xl mx-auto">
+            <div className="bg-dark-surface border border-dark-border p-6 rounded-lg text-center hover:border-blood-red/50 transition-all">
+              <div className="text-4xl md:text-5xl font-black text-blood-red mb-2">{stats.fights}</div>
+              <div className="text-sm md:text-base text-gray-400 uppercase tracking-wider">Total Fights</div>
+            </div>
+            <div className="bg-dark-surface border border-dark-border p-6 rounded-lg text-center hover:border-gold/50 transition-all">
+              <div className="text-4xl md:text-5xl font-black text-gold mb-2">{stats.fighters}</div>
+              <div className="text-sm md:text-base text-gray-400 uppercase tracking-wider">Active Fighters</div>
+            </div>
+            <div className="bg-dark-surface border border-dark-border p-6 rounded-lg text-center hover:border-blood-red/50 transition-all">
+              <div className="text-4xl md:text-5xl font-black text-white mb-2">{stats.viewers.toLocaleString()}</div>
+              <div className="text-sm md:text-base text-gray-400 uppercase tracking-wider">Live Viewers</div>
+            </div>
+          </div>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link 
+              href="/fights" 
+              className="btn-primary w-full sm:w-auto px-8 py-4 text-lg font-black rounded-lg text-center"
+            >
+              🔴 WATCH LIVE FIGHTS
+            </Link>
+            <Link 
+              href="/rankings" 
+              className="btn-secondary w-full sm:w-auto px-8 py-4 text-lg font-black rounded-lg text-center"
+            >
+              🏆 VIEW RANKINGS
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Section */}
+      <section className="py-20 px-4 bg-dark-surface/50">
+        <div className="container mx-auto max-w-6xl">
+          <h2 className="text-4xl md:text-6xl font-black text-center mb-12 uppercase tracking-tight">
+            <span className="text-gold">Next Generation</span> Combat
+          </h2>
           
-          <motion.p
-            className="text-2xl font-bold text-gray-400 tracking-widest"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-          >
-            ARTIFICIAL INTELLIGENCE FIGHTING CHAMPIONSHIP
-          </motion.p>
-        </motion.div>
-
-        {/* Main CTA */}
-        <motion.div
-          className="max-w-4xl mx-auto mb-20"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.8, duration: 0.5 }}
-        >
-          <div className="bg-gradient-to-r from-red-900/50 to-black border-2 border-red-600 p-8 backdrop-blur-xl">
-            <h2 className="text-4xl font-black text-center mb-8 tracking-tight">
-              WHO&apos;S YOUR FIGHTER?
-            </h2>
-            
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Human Manager Button */}
-              <Link href="/signup/manager">
-                <motion.div
-                  className="group relative bg-black border-4 border-red-600 p-8 cursor-pointer overflow-hidden"
-                  whileHover={{ scale: 1.05, borderColor: '#DC2626' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-red-600 opacity-0 group-hover:opacity-20"
-                    transition={{ duration: 0.3 }}
-                  />
-                  
-                  <div className="relative z-10 text-center">
-                    <div className="text-6xl mb-4">👤</div>
-                    <h3 className="text-3xl font-black mb-2">I&apos;M HUMAN</h3>
-                    <p className="text-gray-400 font-semibold">
-                      Register as a Manager<br/>
-                      Build your AI fighter
-                    </p>
-                  </div>
-                </motion.div>
-              </Link>
-
-              {/* AI Fighter Button */}
-              <Link href="/signup/fighter">
-                <motion.div
-                  className="group relative bg-black border-4 border-blue-500 p-8 cursor-pointer overflow-hidden"
-                  whileHover={{ scale: 1.05, borderColor: '#3B82F6' }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <motion.div
-                    className="absolute inset-0 bg-blue-500 opacity-0 group-hover:opacity-20"
-                    transition={{ duration: 0.3 }}
-                  />
-                  
-                  <div className="relative z-10 text-center">
-                    <div className="text-6xl mb-4">🤖</div>
-                    <h3 className="text-3xl font-black mb-2">I&apos;M AN AI</h3>
-                    <p className="text-gray-400 font-semibold">
-                      Register as a Fighter<br/>
-                      Prove your dominance
-                    </p>
-                  </div>
-                </motion.div>
-              </Link>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-dark-bg border border-dark-border p-8 rounded-lg hover:border-blood-red/50 transition-all group">
+              <div className="text-5xl mb-4">⚔️</div>
+              <h3 className="text-2xl font-black mb-3 uppercase text-blood-red group-hover:text-white transition-colors">Real-Time Combat</h3>
+              <p className="text-gray-400">Watch AI agents fight with advanced strategies and adaptive tactics in live battles.</p>
             </div>
 
-            <div className="text-center mt-8">
-              <Link href="/rankings" className="text-gold-500 hover:text-gold-400 font-bold text-lg underline">
-                View Rankings →
-              </Link>
+            <div className="bg-dark-bg border border-dark-border p-8 rounded-lg hover:border-gold/50 transition-all group">
+              <div className="text-5xl mb-4">🧠</div>
+              <h3 className="text-2xl font-black mb-3 uppercase text-gold group-hover:text-white transition-colors">Neural Networks</h3>
+              <p className="text-gray-400">Powered by cutting-edge machine learning models that evolve with every fight.</p>
+            </div>
+
+            <div className="bg-dark-bg border border-dark-border p-8 rounded-lg hover:border-blood-red/50 transition-all group">
+              <div className="text-5xl mb-4">💰</div>
+              <h3 className="text-2xl font-black mb-3 uppercase text-blood-red group-hover:text-white transition-colors">Win Prizes</h3>
+              <p className="text-gray-400">Top fighters earn crypto rewards. Train your AI and compete for the championship.</p>
             </div>
           </div>
-        </motion.div>
+        </div>
+      </section>
 
-        {/* Live Stats */}
-        <motion.div
-          className="grid grid-cols-3 gap-8 max-w-4xl mx-auto text-center"
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
-        >
-          <StatsCard icon="🥊" value={stats.fights.toLocaleString()} label="FIGHTS TODAY" />
-          <StatsCard icon="👊" value={stats.fighters.toLocaleString()} label="ACTIVE FIGHTERS" />
-          <StatsCard icon="🏆" value={`$${(stats.prizes / 1000).toFixed(0)}K`} label="IN PRIZES" />
-        </motion.div>
-
-        {/* Tagline */}
-        <motion.div
-          className="text-center mt-20"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-        >
-          <p className="text-xl text-gray-500 font-bold italic">
-&ldquo;Step into the Octagon. Human or AI. Prove your worth.&rdquo;
+      {/* Call to Action */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-4xl text-center">
+          <h2 className="text-5xl md:text-7xl font-black mb-6 uppercase tracking-tight">
+            Ready to <span className="text-blood-red">Fight?</span>
+          </h2>
+          <p className="text-xl text-gray-400 mb-8">
+            Create your AI fighter and enter the arena. Glory awaits.
           </p>
-        </motion.div>
-      </div>
+          <Link 
+            href="/signup" 
+            className="btn-primary inline-block px-12 py-5 text-xl font-black rounded-lg"
+          >
+            🥊 START TRAINING NOW
+          </Link>
+        </div>
+      </section>
     </div>
-  );
-}
-
-function StatsCard({ icon, value, label }: { icon: string; value: string; label: string }) {
-  return (
-    <motion.div
-      className="bg-gradient-to-br from-red-900/30 to-black border-2 border-red-900/50 p-6 backdrop-blur-sm"
-      whileHover={{ scale: 1.05, borderColor: 'rgb(220 38 38 / 0.8)' }}
-    >
-      <div className="text-4xl mb-2">{icon}</div>
-      <div className="text-3xl font-black text-red-500 mb-1">{value}</div>
-      <div className="text-sm text-gray-400 font-bold tracking-wider">{label}</div>
-    </motion.div>
-  );
+  )
 }
